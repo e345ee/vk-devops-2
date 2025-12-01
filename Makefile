@@ -1,12 +1,11 @@
 K8S_DIR := k8s
 GEN_DIR := $(K8S_DIR)/generated
-VALUES_FILE := values.yaml
 
-CLICKHOUSE_VERSION := $(shell sed -n 's/^clickhouseVersion:[[:space:]]*"\(.*\)"/\1/p' $(VALUES_FILE))
-ADMIN_USER := $(shell sed -n 's/^adminUser:[[:space:]]*"\(.*\)"/\1/p' $(VALUES_FILE))
-ADMIN_PASSWORD := $(shell sed -n 's/^adminPassword:[[:space:]]*"\(.*\)"/\1/p' $(VALUES_FILE))
-READONLY_USER := $(shell sed -n 's/^readonlyUser:[[:space:]]*"\(.*\)"/\1/p' $(VALUES_FILE))
-READONLY_PASSWORD := $(shell sed -n 's/^readonlyPassword:[[:space:]]*"\(.*\)"/\1/p' $(VALUES_FILE))
+CLICKHOUSE_VERSION ?= 24.8
+ADMIN_USER        ?= admin
+ADMIN_PASSWORD    ?= admin_password
+READONLY_USER     ?= readonly
+READONLY_PASSWORD ?= readonly_password
 
 generate:
 	mkdir -p $(GEN_DIR)
