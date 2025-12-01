@@ -3,9 +3,11 @@ kind: StatefulSet
 metadata:
   name: clickhouse
   namespace: clickhouse
+  # StatefulSet разворачивает ClickHouse как состояние-зависимый сервис.
+  # Обеспечивает стабильное имя пода и постоянный диск.
 spec:
   serviceName: clickhouse
-  replicas: 1
+  replicas: 1 # Один экземпляр для упрощённого тестового окружения
   selector:
     matchLabels:
       app: clickhouse
@@ -13,19 +15,21 @@ spec:
     metadata:
       labels:
         app: clickhouse
+        # Метка используется сервисом для маршрутизации трафика.
     spec:
       containers:
         - name: clickhouse
           image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION}
+          # Версия образа параметризуется и подставляется при генерации манифеста.
           imagePullPolicy: IfNotPresent
 
           ports:
             - name: tcp
-              containerPort: 9000
+              containerPort: 9000 # нативный протокол ClickHouse
             - name: http
-              containerPort: 8123
+              containerPort: 8123 # HTTP API ClickHouse
 
-          # Liveness probe
+          # Проверка работоспособности контейнера.
           livenessProbe:
             httpGet:
               path: /ping
@@ -35,7 +39,7 @@ spec:
             timeoutSeconds: 3
             failureThreshold: 5
 
-          # Readiness probe
+          # Проверка готовности к обслуживанию запросов.
           readinessProbe:
             tcpSocket:
               port: tcp
@@ -44,7 +48,7 @@ spec:
             timeoutSeconds: 2
             failureThreshold: 3
 
-          # Resource requests & limits
+          # Ограничения и запросы ресурсов.
           resources:
             requests:
               cpu: "250m"
@@ -54,17 +58,20 @@ spec:
               memory: "2Gi"
 
           volumeMounts:
+            # Персистентные данные ClickHouse
             - name: data
               mountPath: /var/lib/clickhouse
+            # Подключение users.xml из ConfigMap
             - name: users-config
               mountPath: /etc/clickhouse-server/users.d/custom-users.xml
               subPath: custom-users.xml
 
       volumes:
+        # ConfigMap с конфигурацией пользователей
         - name: users-config
           configMap:
             name: clickhouse-users-config
-
+# PVC создаётся автоматически для хранения данных ClickHouse.
   volumeClaimTemplates:
     - metadata:
         name: data

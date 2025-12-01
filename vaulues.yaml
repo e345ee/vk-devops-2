@@ -1,7 +1,10 @@
-clickhouseVersion: "24.8"
+# Параметры, используемые при генерации Kubernetes-манифестов.
+# Файл служит документированным источником значений.
 
-adminUser: "admin"
-adminPassword: "admin_password"
+clickhouseVersion: "24.8"        # Версия образа ClickHouse
 
-readonlyUser: "readonly"
-readonlyPassword: "readonly_password"
+adminUser: "admin"               # Имя администратора
+adminPassword: "admin_password"  # Пароль администратора
+
+readonlyUser: "readonly"         # Пользователь с доступом только на чтение
+readonlyPassword: "readonly_password"  # Пароль readonly-пользователя

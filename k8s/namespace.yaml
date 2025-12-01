@@ -2,3 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: clickhouse
+  # Создаёт отдельное пространство имен Kubernetes.
+  # В рамках этого тестового задания в namespace размещаются все ресурсы ClickHouse:
+  # StatefulSet, Service, ConfigMap, Secret и тома.
+  # Это обеспечивает изоляцию приложения и упрощает управление его объектами.

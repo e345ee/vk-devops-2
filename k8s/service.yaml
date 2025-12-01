@@ -3,14 +3,20 @@ kind: Service
 metadata:
   name: clickhouse
   namespace: clickhouse
+  # Service создаёт стабильную точку доступа к ClickHouse.
+  # Поды могут перезапускаться и менять IP, а Service сохраняет постоянный адрес
+  # и маршрутизирует трафик на поды по метке app: clickhouse.
 spec:
   type: ClusterIP
   selector:
     app: clickhouse
   ports:
+    # TCP-порт для нативного протокола ClickHouse
     - name: tcp
       port: 9000
       targetPort: 9000
+
+    # HTTP-порт для ClickHouse API
     - name: http
       port: 8123
       targetPort: 8123
