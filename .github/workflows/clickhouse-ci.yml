@@ -23,24 +23,24 @@
             cluster_name: clickhouse-ci
 
         - name: Deploy ClickHouse
-          working-directory: ./clickhouse-k8s
+          working-directory: .
           run: |
             make apply
             make status
 
         - name: Wait for pod to be ready
-          working-directory: ./clickhouse-k8s
+          working-directory: .
           run: |
             kubectl wait --for=condition=Ready pod \
               -l app=clickhouse -n clickhouse --timeout=180s
 
         - name: Run SELECT 1 test
-          working-directory: ./clickhouse-k8s
+          working-directory: .
           run: |
             make test
 
         - name: Cleanup
           if: always()
-          working-directory: ./clickhouse-k8s
+          working-directory: .
           run: |
             make delete
