@@ -1,0 +1,46 @@
+
+  name: ClickHouse K8s CI
+
+  on:
+    push:
+      branches: [ main, master ]
+    pull_request:
+
+  jobs:
+    clickhouse-ci:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Set up kubectl
+          uses: azure/setup-kubectl@v4
+
+        - name: Set up kind (Kubernetes in Docker)
+          uses: helm/kind-action@v1.9.0
+          with:
+            cluster_name: clickhouse-ci
+
+        - name: Deploy ClickHouse
+          working-directory: ./clickhouse-k8s
+          run: |
+            make apply
+            make status
+
+        - name: Wait for pod to be ready
+          working-directory: ./clickhouse-k8s
+          run: |
+            kubectl wait --for=condition=Ready pod \
+              -l app=clickhouse -n clickhouse --timeout=180s
+
+        - name: Run SELECT 1 test
+          working-directory: ./clickhouse-k8s
+          run: |
+            make test
+
+        - name: Cleanup
+          if: always()
+          working-directory: ./clickhouse-k8s
+          run: |
+            make delete

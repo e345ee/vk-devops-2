@@ -1,0 +1,7 @@
+clickhouseVersion: "24.8"
+
+adminUser: "admin"
+adminPassword: "admin_password"
+
+readonlyUser: "readonly"
+readonlyPassword: "readonly_password"
