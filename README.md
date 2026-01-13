@@ -1,6 +1,5 @@
 # ClickHouse Kubernetes Deployment
 
-Проект тестовое для vk devops intern.
 Данный проект разворачивает одиночный экземпляр ClickHouse в Kubernetes с параметризуемой конфигурацией.  
 Шаблоны YAML-манифестов генерируются через `envsubst`, управление ресурсами выполняется с помощью `Makefile`, а проверка развёртывания реализована в GitHub Actions.
 
